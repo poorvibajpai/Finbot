@@ -53,3 +53,31 @@ def loan_tenure(P: float, E: float, R: float):
     return years, months
 
 
+def sip_for_target(target: float, R: float, years: float) -> float:
+    """
+    SIP for a Target Amount calculator.
+
+    target: the future value the user wants to reach
+    R: expected annual return rate (%)
+    years: investment horizon in years
+
+    Returns the required monthly SIP contribution (annuity-due: deposit at
+    the start of each month), assuming end-of-horizon future value = target.
+    """
+    if target <= 0:
+        raise CalculatorError("Target amount must be a positive number.")
+    if years <= 0:
+        raise CalculatorError("Investment period must be a positive number of years.")
+    if R <= 0 or R > 100:
+        raise CalculatorError("Expected annual return rate should be between 0 and 100.")
+
+    r = _monthly_rate(R)
+    n_months = years * 12
+
+    growth_factor = (1 + r) ** n_months
+    denom = (growth_factor - 1) * (1 + r)
+    if denom <= 0:
+        raise CalculatorError("Could not solve for an SIP with these inputs — try different values.")
+
+    sip = target * r / denom
+    return sip
