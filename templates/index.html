@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FinBot — Finance Chat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="ledger">
+    <header class="ledger-head">
+      <div class="ledger-mark">F</div>
+      <div class="ledger-title">
+        <h1>FinBot</h1>
+        <p>a plain-spoken ledger for savings, loans &amp; investing</p>
+      </div>
+      <div class="ledger-tools">
+        <span class="tool-tag">Loan Tenure</span>
+        <span class="tool-tag">SIP Target</span>
+      </div>
+    </header>
+
+    <main id="thread" class="thread" aria-live="polite"></main>
+
+    <form id="composer" class="composer">
+      <input
+        id="input"
+        type="text"
+        autocomplete="off"
+        placeholder="Ask about savings, loans, investing… or start a calculator"
+        aria-label="Message"
+      />
+      <button type="submit" aria-label="Send">Send</button>
+    </form>
+  </div>
+
+  <script>
+    window.__GREETING__ = {{ greeting|tojson }};
+  </script>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
