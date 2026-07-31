@@ -10,10 +10,10 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "dev-secret-change-me")
 
 GREETING = (
-    "Hi, I'm FinBot \U0001F4B0 — I can chat about savings, loans, investing, "
+    "Hi, I'm FinBot \U0001F4B0 - I can chat about savings, loans, investing, "
     "interest and budgeting, and I can run two calculators for you:\n\n"
-    "1. Loan Tenure — how long it'll take to pay off a loan\n"
-    "2. SIP for a Target Amount — how much to invest monthly to hit a goal\n\n"
+    "1. Loan Tenure - how long it'll take to pay off a loan\n"
+    "2. SIP for a Target Amount - how much to invest monthly to hit a goal\n\n"
     "Ask me a finance question any time, or say \"calculate loan tenure\" / "
     "\"help me plan an SIP\" to get started."
 )
@@ -82,7 +82,7 @@ def confirmation_text(state):
     lines = [f"  • {FIELD_LABELS[k]}: {state['inputs'][k]:,.2f}" for k, _ in fields]
     calc_name = "Loan Tenure" if state["stage"] == "loan_tenure" else "SIP"
     return (
-        f"Got it — here's what I have for the {calc_name} calculation:\n"
+        f"Got it - here's what I have for the {calc_name} calculation:\n"
         + "\n".join(lines)
         + "\n\nShall I go ahead and calculate? (yes/no)"
     )
@@ -160,7 +160,7 @@ def handle_new_message(state, message):
 
     if intent == "OFF_TOPIC":
         return (
-            "I'm only able to help with finance topics — savings, loans, investing, "
+            "I'm only able to help with finance topics - savings, loans, investing, "
             "interest, and budgeting. Is there something in that space I can help with?"
         )
 
@@ -173,11 +173,11 @@ def handle_input(state, message):
 
     value = parse_number(message)
     if value is None:
-        return "I didn't catch a number there — " + question
+        return "I didn't catch a number there - " + question
     if value < 0:
-        return "That should be a positive number — " + question
+        return "That should be a positive number - " + question
     if key == "R" and value > 100:
-        return "Please give a rate between 0 and 100 (%) — " + question
+        return "Please give a rate between 0 and 100 (%) - " + question
 
     state["inputs"][key] = value
     state["step"] += 1
@@ -198,17 +198,17 @@ def handle_confirmation(state, message):
         except CalculatorError as e:
             state.clear()
             state.update(fresh_state())
-            return f"{e}\n\nLet's start over — what would you like to calculate?"
+            return f"{e}\n\nLet's start over - what would you like to calculate?"
         state.clear()
         state.update(fresh_state())
-        return result + "\n\nAnything else — another calculation, or a finance question?"
+        return result + "\n\nAnything else - another calculation, or a finance question?"
 
     if answer in NO_WORDS:
         state.clear()
         state.update(fresh_state())
-        return "No problem, let's start over. What would you like to calculate — Loan Tenure or SIP?"
+        return "No problem, let's start over. What would you like to calculate - Loan Tenure or SIP?"
 
-    return "Just to confirm — shall I go ahead and calculate? (yes/no)"
+    return "Just to confirm - shall I go ahead and calculate? (yes/no)"
 
 
 if __name__ == "__main__":
