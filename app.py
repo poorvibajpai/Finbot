@@ -166,3 +166,25 @@ def handle_new_message(state, message):
 
     return llm.finance_chat(message, session.get("history", []))
 
+
+def handle_input(state, message):
+    fields = fields_for(state["stage"])
+    key, question = fields[state["step"]]
+
+    value = parse_number(message)
+    if value is None:
+        return "I didn't catch a number there — " + question
+    if value < 0:
+        return "That should be a positive number — " + question
+    if key == "R" and value > 100:
+        return "Please give a rate between 0 and 100 (%) — " + question
+
+    state["inputs"][key] = value
+    state["step"] += 1
+
+    if state["step"] >= len(fields):
+        state["confirming"] = True
+        return confirmation_text(state)
+
+    return ask_current_field(state)
+
