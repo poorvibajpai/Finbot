@@ -1,4 +1,4 @@
-# FinBot — Financial Chatbot with Interactive Calculators
+# FinBot - Financial Chatbot with Interactive Calculators
 
 A small Flask chatbot that discusses personal finance topics and can walk a
 user through two interactive calculators: **Loan Tenure** and **SIP for a
@@ -22,7 +22,7 @@ Target Amount**.
 
 ```
 app.py            Flask routes + the calculator conversation state machine
-calculators.py    Pure math: loan_tenure(), sip_for_target() — no LLM/Flask code
+calculators.py    Pure math: loan_tenure(), sip_for_target() - no LLM/Flask code
 llm.py            LLM wrapper: intent classification + finance chat (Ollama or Gemini)
 templates/        Chat page (Jinja)
 static/           CSS + client-side JS for the chat UI
@@ -34,9 +34,9 @@ Calculator math and chat/LLM logic are kept in separate modules on purpose.
 
 Supports **either**:
 
-- **Ollama** (default) — local, free, no API key. Requires Ollama running
+- **Ollama** (default) - local, free, no API key. Requires Ollama running
   locally with a model pulled, e.g. `ollama pull llama3.1`.
-- **Gemini** — set `LLM_PROVIDER=gemini` and `GEMINI_API_KEY` to use
+- **Gemini** - set `LLM_PROVIDER=gemini` and `GEMINI_API_KEY` to use
   Google's Gemini API instead.
 
 If the LLM call fails for any reason (model not running, no API key, network
@@ -74,7 +74,7 @@ See `.env.example` for all configurable environment variables.
 ```
 User: What's the difference between a fixed and a floating interest rate?
 FinBot: A fixed rate stays the same for the whole loan term, so your EMI
-never changes — good for predictable budgeting. A floating rate moves with
+never changes - good for predictable budgeting. A floating rate moves with
 the market (e.g. tied to a benchmark rate), so your EMI can rise or fall
 over time. Floating rates often start a bit lower but carry more risk if
 rates climb. If you value certainty, fixed is usually the safer pick.
@@ -84,7 +84,7 @@ rates climb. If you value certainty, fixed is usually the safer pick.
 
 ```
 User: What's the weather like in Lucknow today?
-FinBot: I'm only able to help with finance topics — savings, loans,
+FinBot: I'm only able to help with finance topics - savings, loans,
 investing, interest, and budgeting. Is there something in that space I can
 help with?
 ```
@@ -104,7 +104,7 @@ User: 12000
 FinBot: What's the annual interest rate, in %? e.g. 9.5
 
 User: 9.5
-FinBot: Got it — here's what I have for the Loan Tenure calculation:
+FinBot: Got it - here's what I have for the Loan Tenure calculation:
   • Loan amount: 500,000.00
   • Monthly EMI: 12,000.00
   • Annual rate (%): 9.50
@@ -115,7 +115,7 @@ User: yes
 FinBot: With a loan of 500,000 at 9.5% annual interest, paying an EMI of
 12,000/month, it will take 4 year(s) & 2 month(s) to pay it off.
 
-Anything else — another calculation, or a finance question?
+Anything else - another calculation, or a finance question?
 ```
 
 ### 4. Invalid input handled gracefully (EMI too low)
@@ -136,7 +136,7 @@ FinBot: An EMI of 1,000.00 does not even cover the monthly interest on
 this loan (monthly interest ≈ 3,795.77), so the balance would never go
 down. Try a higher EMI.
 
-Let's start over — what would you like to calculate?
+Let's start over - what would you like to calculate?
 ```
 
 ## Notes on the math
@@ -148,11 +148,4 @@ Let's start over — what would you like to calculate?
   `= Target · r / (((1 + r)^(months) - 1) · (1 + r))`, assuming deposits at
   the start of each month (annuity-due).
 
-## Not included
 
-- No SWP calculator (task requires any two of three — Loan Tenure and SIP
-  are implemented).
-- No MCP tool exposure (listed as a bonus in the brief, not required).
-- No user accounts, persistence, or auth — conversation state lives in the
-  Flask session for the duration of the browser session, as allowed by the
-  brief.
