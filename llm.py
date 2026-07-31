@@ -24,3 +24,22 @@ if PROVIDER == "gemini" and GEMINI_API_KEY:
     _gemini_client = genai.GenerativeModel(GEMINI_MODEL_NAME)
 
 
+def _call_ollama(system_prompt: str, user_prompt: str) -> str:
+    full_prompt = f"{system_prompt}\n\n{user_prompt}"
+    resp = requests.post(
+        OLLAMA_URL,
+        json={"model": OLLAMA_MODEL, "prompt": full_prompt, "stream": False},
+        timeout=30,
+    )
+    resp.raise_for_status()
+    return (resp.json().get("response") or "").strip()
+
+
+def _call_gemini(system_prompt: str, user_prompt: str) -> str:
+    if _gemini_client is None:
+        raise RuntimeError("Gemini client not configured (missing GEMINI_API_KEY).")
+    prompt = f"{system_prompt}\n\n{user_prompt}"
+    response = _gemini_client.generate_content(prompt)
+    return (response.text or "").strip()
+
+
