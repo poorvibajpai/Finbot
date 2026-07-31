@@ -67,3 +67,92 @@ Then open **http://localhost:5000** in a browser.
 
 See `.env.example` for all configurable environment variables.
 
+## Example conversations
+
+### 1. General finance question
+
+```
+User: What's the difference between a fixed and a floating interest rate?
+FinBot: A fixed rate stays the same for the whole loan term, so your EMI
+never changes — good for predictable budgeting. A floating rate moves with
+the market (e.g. tied to a benchmark rate), so your EMI can rise or fall
+over time. Floating rates often start a bit lower but carry more risk if
+rates climb. If you value certainty, fixed is usually the safer pick.
+```
+
+### 2. Off-topic question being declined
+
+```
+User: What's the weather like in Lucknow today?
+FinBot: I'm only able to help with finance topics — savings, loans,
+investing, interest, and budgeting. Is there something in that space I can
+help with?
+```
+
+### 3. Full calculator walkthrough (Loan Tenure)
+
+```
+User: I want to calculate loan tenure
+FinBot: Sure, let's work out your Loan Tenure.
+
+What's the loan amount (principal)? e.g. 500000
+
+User: 500000
+FinBot: What's your monthly EMI amount? e.g. 12000
+
+User: 12000
+FinBot: What's the annual interest rate, in %? e.g. 9.5
+
+User: 9.5
+FinBot: Got it — here's what I have for the Loan Tenure calculation:
+  • Loan amount: 500,000.00
+  • Monthly EMI: 12,000.00
+  • Annual rate (%): 9.50
+
+Shall I go ahead and calculate? (yes/no)
+
+User: yes
+FinBot: With a loan of 500,000 at 9.5% annual interest, paying an EMI of
+12,000/month, it will take 4 year(s) & 2 month(s) to pay it off.
+
+Anything else — another calculation, or a finance question?
+```
+
+### 4. Invalid input handled gracefully (EMI too low)
+
+```
+User: loan tenure please
+FinBot: Sure, let's work out your Loan Tenure. What's the loan amount
+(principal)?
+
+User: 500000
+FinBot: What's your monthly EMI amount?
+
+User: 1000
+FinBot: What's the annual interest rate, in %?
+
+User: 9.5
+FinBot: An EMI of 1,000.00 does not even cover the monthly interest on
+this loan (monthly interest ≈ 3,795.77), so the balance would never go
+down. Try a higher EMI.
+
+Let's start over — what would you like to calculate?
+```
+
+## Notes on the math
+
+- **Loan Tenure**: monthly rate `r = (1 + R/100)^(1/12) - 1`; number of
+  months `n = ln(E / (E - P·r)) / ln(1 + r)`. Only valid when `E > P·r`
+  (EMI must exceed the monthly interest), which is checked explicitly.
+- **SIP for a Target**: monthly rate `r` as above; required monthly SIP
+  `= Target · r / (((1 + r)^(months) - 1) · (1 + r))`, assuming deposits at
+  the start of each month (annuity-due).
+
+## Not included
+
+- No SWP calculator (task requires any two of three — Loan Tenure and SIP
+  are implemented).
+- No MCP tool exposure (listed as a bonus in the brief, not required).
+- No user accounts, persistence, or auth — conversation state lives in the
+  Flask session for the duration of the browser session, as allowed by the
+  brief.
