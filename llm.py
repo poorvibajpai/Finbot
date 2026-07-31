@@ -69,11 +69,12 @@ Reply with ONLY the single label word, nothing else."""
 
 _LOAN_KEYWORDS = [
     "loan tenure", "pay off my loan", "loan term", "how long to pay off",
-    "loan calculator", "years to repay", "repay my loan",
+    "loan calculator", "years to repay", "repay my loan", "how long will it take to pay", "months to repay", "loan duration",
 ]
 _SIP_KEYWORDS = [
     "sip", "systematic investment", "target amount", "invest monthly",
-    "monthly investment", "reach my goal",
+    "monthly investment", "reach my goal", "how much should i invest",
+    "monthly sip", "investment plan for",
 ]
 _FINANCE_KEYWORDS = [
     "save", "saving", "invest", "interest", "budget", "loan", "emi", "stock",
