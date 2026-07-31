@@ -116,3 +116,10 @@ def parse_number(text):
 # ---------------------------------------------------------------------------
 # Routes
 # ---------------------------------------------------------------------------
+
+@app.route("/")
+def index():
+    session.clear()
+    return render_template("index.html", greeting=GREETING)
+
+
