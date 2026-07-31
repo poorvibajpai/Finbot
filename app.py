@@ -123,3 +123,46 @@ def index():
     return render_template("index.html", greeting=GREETING)
 
 
+@app.route("/chat", methods=["POST"])
+def chat():
+    data = request.get_json(force=True) or {}
+    message = (data.get("message") or "").strip()
+    if not message:
+        return jsonify({"reply": "Could you type something?"})
+
+    state = get_state()
+
+    if state["stage"]:
+        reply = handle_confirmation(state, message) if state["confirming"] else handle_input(state, message)
+    else:
+        reply = handle_new_message(state, message)
+
+    save_state(state)
+    push_history("user", message)
+    push_history("assistant", reply)
+    return jsonify({"reply": reply})
+
+
+def handle_new_message(state, message):
+    intent = llm.classify_intent(message)
+
+    if intent == "LOAN_TENURE":
+        state.clear()
+        state.update(fresh_state())
+        state["stage"] = "loan_tenure"
+        return "Sure, let's work out your Loan Tenure.\n\n" + ask_current_field(state)
+
+    if intent == "SIP":
+        state.clear()
+        state.update(fresh_state())
+        state["stage"] = "sip"
+        return "Sure, let's plan your SIP.\n\n" + ask_current_field(state)
+
+    if intent == "OFF_TOPIC":
+        return (
+            "I'm only able to help with finance topics — savings, loans, investing, "
+            "interest, and budgeting. Is there something in that space I can help with?"
+        )
+
+    return llm.finance_chat(message, session.get("history", []))
+
