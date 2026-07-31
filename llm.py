@@ -43,3 +43,16 @@ def _call_gemini(system_prompt: str, user_prompt: str) -> str:
     return (response.text or "").strip()
 
 
+def call_llm(system_prompt: str, user_prompt: str):
+    """Returns the model's reply, or None if the call failed for any reason."""
+    try:
+        if PROVIDER == "gemini":
+            return _call_gemini(system_prompt, user_prompt)
+        return _call_ollama(system_prompt, user_prompt)
+    except Exception:
+        return None
+
+
+# ---------------------------------------------------------------------------
+# Intent classification
+# ---------------------------------------------------------------------------
