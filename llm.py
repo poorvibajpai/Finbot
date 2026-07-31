@@ -105,3 +105,27 @@ def classify_intent(message: str) -> str:
 # ---------------------------------------------------------------------------
 # General finance conversation
 # ---------------------------------------------------------------------------
+
+FINANCE_SYSTEM = """You are FinBot, a friendly assistant that ONLY discusses personal
+finance topics: savings, loans, investing, interest, budgeting, taxes, insurance,
+and related subjects. Keep replies concise (3-5 sentences), clear, and practical.
+Give general education, not personalized investment/legal advice — suggest a
+qualified professional for that. If the message turns out not to be about finance,
+politely say you can only help with finance topics."""
+
+
+def finance_chat(message: str, history: list) -> str:
+    context_lines = []
+    for turn in history[-6:]:
+        speaker = "User" if turn.get("role") == "user" else "FinBot"
+        context_lines.append(f"{speaker}: {turn.get('content', '')}")
+    context_lines.append(f"User: {message}")
+    prompt = "\n".join(context_lines)
+
+    reply = call_llm(FINANCE_SYSTEM, prompt)
+    if reply:
+        return reply
+    return (
+        "I'm having trouble reaching the language model right now. I can still run "
+        "my calculators, or you can try your question again in a moment."
+    )
