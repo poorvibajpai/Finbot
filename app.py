@@ -188,3 +188,28 @@ def handle_input(state, message):
 
     return ask_current_field(state)
 
+
+def handle_confirmation(state, message):
+    answer = message.strip().lower()
+
+    if answer in YES_WORDS:
+        try:
+            result = run_calculation(state)
+        except CalculatorError as e:
+            state.clear()
+            state.update(fresh_state())
+            return f"{e}\n\nLet's start over — what would you like to calculate?"
+        state.clear()
+        state.update(fresh_state())
+        return result + "\n\nAnything else — another calculation, or a finance question?"
+
+    if answer in NO_WORDS:
+        state.clear()
+        state.update(fresh_state())
+        return "No problem, let's start over. What would you like to calculate — Loan Tenure or SIP?"
+
+    return "Just to confirm — shall I go ahead and calculate? (yes/no)"
+
+
+if __name__ == "__main__":
+    app.run(debug=True, port=5000)
