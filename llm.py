@@ -56,3 +56,52 @@ def call_llm(system_prompt: str, user_prompt: str):
 # ---------------------------------------------------------------------------
 # Intent classification
 # ---------------------------------------------------------------------------
+
+INTENT_SYSTEM = """You are an intent classifier for a personal-finance chatbot.
+Classify the user's latest message into exactly ONE of these labels:
+
+LOAN_TENURE - user wants to know how long it will take to pay off a loan
+SIP - user wants to know how much to invest monthly (SIP) to reach a target amount
+OFF_TOPIC - the message has nothing to do with personal finance (weather, coding help, trivia, etc.)
+FINANCE - a general finance question or discussion (savings, budgeting, interest, investing concepts, etc.)
+
+Reply with ONLY the single label word, nothing else."""
+
+_LOAN_KEYWORDS = [
+    "loan tenure", "pay off my loan", "loan term", "how long to pay off",
+    "loan calculator", "years to repay", "repay my loan",
+]
+_SIP_KEYWORDS = [
+    "sip", "systematic investment", "target amount", "invest monthly",
+    "monthly investment", "reach my goal",
+]
+_FINANCE_KEYWORDS = [
+    "save", "saving", "invest", "interest", "budget", "loan", "emi", "stock",
+    "mutual fund", "credit", "debt", "tax", "retirement", "insurance",
+    "expense", "income", "finance", "financial", "money",
+]
+
+
+def _keyword_fallback(message: str) -> str:
+    m = message.lower()
+    if any(k in m for k in _LOAN_KEYWORDS):
+        return "LOAN_TENURE"
+    if any(k in m for k in _SIP_KEYWORDS):
+        return "SIP"
+    if any(k in m for k in _FINANCE_KEYWORDS):
+        return "FINANCE"
+    return "OFF_TOPIC"
+
+
+def classify_intent(message: str) -> str:
+    raw = call_llm(INTENT_SYSTEM, message)
+    if raw:
+        label = raw.strip().upper().split()[0].strip(".:,!")
+        if label in ("LOAN_TENURE", "SIP", "OFF_TOPIC", "FINANCE"):
+            return label
+    return _keyword_fallback(message)
+
+
+# ---------------------------------------------------------------------------
+# General finance conversation
+# ---------------------------------------------------------------------------
